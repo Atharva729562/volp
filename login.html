@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - VOLPPro</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="logo.png">
+</head>
+<script>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.body.className = savedTheme;
+</script>
+
+<body>
+  <div class="auth-container">
+  <h2>Login</h2>
+  <form id="loginForm" class="auth-form" onsubmit="return loginUser(event)">
+    <input type="email" id="loginEmail" placeholder="Email" oninput="clearError('loginEmailError')" required>
+<small id="loginEmailError" class="error-text"></small>
+
+    <div class="password-field">
+      <input type="password" id="loginPassword" placeholder="Password" required>
+      <span class="toggle-password" onclick="togglePassword('loginPassword', this)">👁️</span>
+    </div>
+    <button type="submit" class="btn">Login</button>
+  </form>
+  <p>Don’t have an account? <a href="signup.html">Sign Up</a></p>
+</div>
+
+      <!-- Profile + Logout (hidden initially) -->
+      <div id="userInfo" class="user-info" style="display:none;">
+        <img src="https://www.w3schools.com/howto/img_avatar.png" alt="User" class="avatar">
+        <button type="button" class="btn logout" onclick="handleLogout()">Logout</button>
+      </div>
+
+      
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

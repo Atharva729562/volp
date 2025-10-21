@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="logo.png">
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: white;
+      padding: 20px;
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .card {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    canvas {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📊 Analytics Dashboard</h1>
+  <div class="dashboard">
+    <div class="card">
+      <h2 id="courses">Courses: 0</h2>
+      <h2 id="students">Students: 0</h2>
+    </div>
+    <div class="card">
+      <h2 id="assignments">Assignments: 0</h2>
+      <h2 id="submissions">Submissions: 0</h2>
+    </div>
+    <div class="card">
+      <canvas id="chart1"></canvas>
+    </div>
+    <div class="card">
+      <canvas id="chart2"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:3000";
+    const userId = localStorage.getItem("userId");
+    const role = localStorage.getItem("role"); // "admin" or "student"
+
+    let endpoint = role === "admin" ? `/admin/analytics/${userId}` : `/student/analytics/${userId}`;
+
+    fetch(API_URL + endpoint)
+      .then(res => res.json())
+      .then(data => {
+        if (role === "admin") {
+          document.getElementById("courses").innerText = "Courses: " + data.courses;
+          document.getElementById("students").innerText = "Students: " + data.students;
+          document.getElementById("assignments").innerText = "Assignments: " + data.assignments;
+          document.getElementById("submissions").innerText = "Submissions: " + data.submissions;
+
+          new Chart(document.getElementById("chart1"), {
+            type: "bar",
+            data: {
+              labels: ["Courses", "Students", "Assignments", "Submissions"],
+              datasets: [{
+                label: "Admin Overview",
+                data: [data.courses, data.students, data.assignments, data.submissions],
+                backgroundColor: ["#ff6f61","#6b5b95","#88b04b","#f7cac9"]
+              }]
+            }
+          });
+        } else {
+          document.getElementById("courses").innerText = "Courses Joined: " + data.courses;
+          document.getElementById("students").innerText = "Assignments: " + data.assignments;
+          document.getElementById("assignments").innerText = "Submitted: " + data.submitted;
+          document.getElementById("submissions").innerText = "Pending: " + data.pending;
+
+          new Chart(document.getElementById("chart1"), {
+            type: "doughnut",
+            data: {
+              labels: ["Submitted", "Pending"],
+              datasets: [{
+                data: [data.submitted, data.pending],
+                backgroundColor: ["#4caf50", "#f44336"]
+              }]
+            }
+          });
+        }
+      });
+  </script>
+
+</body>
+</html>

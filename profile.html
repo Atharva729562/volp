@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - VOLPPro</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="logo.png">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .profile-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 30px;
+      width: 400px;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.8s ease;
+    }
+
+    .profile-header img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+      border: 3px solid #ffd600;
+    }
+
+    .profile-header h2 {
+      margin: 10px 0 5px;
+      color: #ffd600;
+    }
+
+    .profile-header p {
+      margin: 3px 0;
+      color: #ddd;
+    }
+
+    .profile-stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 25px 0;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 12px;
+      width: 100px;
+      transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: scale(1.05);
+    }
+
+    .stat-card h3 {
+      margin: 0;
+      font-size: 1.4em;
+      color: #ffd600;
+    }
+
+    .profile-actions button {
+      background: #ffd600;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 8px 5px;
+      cursor: pointer;
+      width: 120px;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .profile-actions button:hover {
+      background: #e6c200;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<script>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.body.className = savedTheme;
+</script>
+
+<body>
+
+  <section class="profile-card">
+    <div class="profile-header">
+      <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="User Avatar">
+      <h2 id="profileName">Loading...</h2>
+      <p id="profileRole">Role: --</p>
+      <p id="profileEmail">Email: --</p>
+    </div>
+
+    <div class="profile-stats">
+      <div class="stat-card">
+        <h3 id="stat1">0</h3>
+        <p id="stat1Label">--</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="stat2">0</h3>
+        <p id="stat2Label">--</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="stat3">0</h3>
+        <p id="stat3Label">--</p>
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <button onclick="editProfile()">Edit</button>
+      <button onclick="changePassword()">Password</button>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </section>
+
+  <script>
+    const API_URL = "http://localhost:3000";
+
+    // Load profile data
+    window.onload = () => {
+  const userId = localStorage.getItem("userId");
+  const role = localStorage.getItem("userRole");
+
+  if (!userId) {
+    alert("⚠️ Please login first.");
+    window.location.href = "login.html";
+    return;
+  }
+
+  fetch(`${API_URL}/profile/${userId}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        alert("❌ " + data.error);
+      } else {
+        document.getElementById("profileName").textContent = data.name;
+        document.getElementById("profileRole").textContent = "Role: " + data.role;
+        document.getElementById("profileEmail").textContent = "Email: " + data.email;
+
+        // Load stats
+        fetch(`${API_URL}/profile/${userId}/stats`)
+          .then(res => res.json())
+          .then(stats => {
+            if (data.role === "student") {
+              document.getElementById("stat1").textContent = stats.coursesJoined;
+              document.getElementById("stat1Label").textContent = "Courses";
+              document.getElementById("stat2").textContent = stats.assignmentsSubmitted;
+              document.getElementById("stat2Label").textContent = "Submitted";
+              document.getElementById("stat3").textContent = stats.pendingAssignments;
+              document.getElementById("stat3Label").textContent = "Pending";
+            } else {
+              document.getElementById("stat1").textContent = stats.coursesCreated;
+              document.getElementById("stat1Label").textContent = "Courses";
+              document.getElementById("stat2").textContent = stats.assignmentsGiven;
+              document.getElementById("stat2Label").textContent = "Assignments";
+              document.getElementById("stat3").textContent = stats.totalSubmissions;
+              document.getElementById("stat3Label").textContent = "Submissions";
+            }
+          });
+      }
+    });
+};
+
+
+    function editProfile() {
+      alert("✏️ Edit Profile functionality coming soon!");
+    }
+
+    function changePassword() {
+      alert("🔑 Change Password functionality coming soon!");
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "login.html";
+    }
+  </script>
+
+</body>
+</html>

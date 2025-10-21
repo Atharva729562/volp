@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore Courses - Student</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="logo.png">
+  <style>
+    /* Page background (same as admin explore) */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 12px 24px;
+  backdrop-filter: blur(8px);
+}
+
+.navbar .logo {
+  font-size: 1.6em;
+  font-weight: bold;
+  color: #ffd600;
+}
+
+.navbar .btn {
+  font-size: 0.9em;
+}
+
+/* Content */
+.page-content {
+  flex: 1;
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.page-content h1 {
+  font-size: 2em;
+  margin-bottom: 30px;
+  color: #fcfcfc;
+}
+
+/* Courses Grid */
+.courses-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+/* Course Card */
+.course-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.55);
+}
+
+.course-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.3em;
+  color: #fff;
+}
+
+.course-card p {
+  margin: 6px 0;
+  font-size: 0.95em;
+  color: #ddd;
+}
+
+.course-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Buttons */
+.btn {
+  background: #ffd600;
+  color: #000;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.btn:hover {
+  background: #e6c200;
+}
+
+.btn-danger {
+  background: #e63946;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #c81d25;
+}
+  </style>
+</head>
+<script>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.body.className = savedTheme;
+</script>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">VOLPPro</div>
+    <div class="notifications">
+      <span id="notif-bell">🔔</span>
+      <span id="notif-count" class="notif-count">0</span>
+      <div id="notif-dropdown" class="notif-dropdown"></div>
+    </div>
+
+      <a href="index.html" class="btn">⬅ Back</a>
+    </div>
+
+  </nav>
+
+
+  <!-- Page Content -->
+  <section class="page-content">
+    <h1>📚 My Joined Courses</h1>
+    <div id="studentCourses" class="courses-container">
+      <p>Loading your courses...</p>
+    </div>
+  </section>
+
+  <script>
+    const API_URL = "http://localhost:3000"; // adjust if needed
+    const studentId = localStorage.getItem("userId");
+
+    if (!studentId || localStorage.getItem("userRole") !== "student") {
+      alert("⚠️ You must be logged in as a student.");
+      window.location.href = "login.html";
+    }
+
+    // Load courses
+    function loadCourses() {
+      fetch(`${API_URL}/student/courses/${studentId}`)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById("studentCourses");
+
+          if (!data.length) {
+            container.innerHTML = "<p>You haven’t joined any courses yet.</p>";
+          } else {
+            container.innerHTML = data.map(c => `
+              <div class="course-card">
+                <h3>${c.name}</h3>
+                <p><strong>Code:</strong> ${c.code}</p>
+                <p><strong>ID:</strong> ${c.course_id}</p>
+                <div class="course-actions">
+                  <button class="btn" onclick="location.href='course-assignments.html?course_id=${c.course_id}'">
+                    📄 View Assignments
+                  </button>
+                  <button class="btn btn-danger" onclick="leaveCourse(${c.course_id})">
+                    ❌ Leave
+                  </button>
+                </div>
+              </div>
+            `).join("");
+          }
+        })
+        .catch(err => {
+          console.error("⚠️ Error fetching courses:", err);
+          document.getElementById("studentCourses").innerHTML =
+            "<p>⚠️ Failed to load courses. Please try again later.</p>";
+        });
+    }
+
+    // Leave a course
+    function leaveCourse(courseId) {
+      if (!confirm("Are you sure you want to leave this course?")) return;
+
+      fetch(`${API_URL}/student/course/${courseId}?studentId=${studentId}`, {
+        method: "DELETE"
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            alert("❌ " + data.error);
+          } else {
+            alert("✅ Left course successfully");
+            loadCourses(); // refresh
+          }
+        })
+        .catch(err => console.error("⚠️ Error leaving course:", err));
+    }
+
+    // Initial load
+    loadCourses();
+  </script>
+
+</body>
+</html>

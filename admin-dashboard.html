@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - VOLPPro</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+  <link rel="icon" type="image/png" href="logo.png">
+</head>
+<script>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.body.className = savedTheme;
+</script>
+
+<body>
+    <script>
+  if (localStorage.getItem("userRole") !== "admin") {
+    alert("⛔ Access denied. Admins only!");
+    window.location.href = "index.html";
+  }
+</script>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">VOLPPro</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="admin-dashboard.html" class="active">Admin</a></li>
+    </ul>
+  </nav>
+
+  <!-- Admin Panel -->
+  <section class="page-content">
+    <h1>👨‍🏫 Admin Dashboard</h1>
+
+ <div class="dashboard-box">
+      <h2>Create Course</h2>
+      <input type="text" id="courseName" placeholder="Course Name">
+      <input type="text" id="courseCode" placeholder="Course Code (unique)">
+      <button onclick="createCourse()">Create</button>
+    </div>
+
+    <div class="dashboard-box">
+      <h2>Add Assignment</h2>
+      <input type="text" id="courseId" placeholder="Enter Course ID" required>
+      <input type="text" id="assignmentTitle" placeholder="Enter Assignment Title" required>
+      <input type="datetime-local" id="assignmentDeadline" required>
+      <button type="button" onclick="addAssignment()">Add Assignment</button>
+    </div>
+
+    <div class="dashboard-box">
+  <h2>Submissions</h2>
+  <input type="text" id="submissionCourseId" placeholder="Course ID">
+  <button onclick="viewSubmissions()">View</button>
+  <div id="submissionsList"></div>
+    </div>
+
+  </section>
+</body>
+</html>

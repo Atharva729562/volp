@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup - VOLPPro</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="logo.png">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+    }
+
+    .signup-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 30px;
+      width: 350px;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.8s ease;
+    }
+
+    .signup-card h1 {
+      margin-bottom: 20px;
+      color: #ffd600;
+    }
+
+    .signup-card input, .signup-card select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 1em;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .signup-card input:focus, .signup-card select:focus {
+      box-shadow: 0 0 6px #ffd600;
+    }
+
+    .password-box {
+      position: relative;
+    }
+
+    .password-box input {
+      padding-right: 40px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 1.2em;
+      color: #ffd600;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    button {
+      background: #ffd600;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    button:hover {
+      background: #e6c200;
+      transform: scale(1.02);
+    }
+    .login-link {
+      margin-top: 15px;
+      font-size: 0.9em;
+      color: #ddd;
+    }
+
+    .login-link a {
+      color: #ffd600;
+      font-weight: bold;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .login-link a:hover {
+      color: #e6c200;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<script>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.body.className = savedTheme;
+</script>
+
+<body>
+
+  <div class="signup-card">
+    <h1>🔑 Signup</h1>
+
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="email" id="email" placeholder="Email" oninput="clearError('emailError')">
+<small id="emailError" class="error-text"></small>
+
+
+    <div class="password-box">
+      <input type="password" id="password" placeholder="Password">
+      <span class="toggle-password" onclick="togglePassword()">👁</span>
+    </div>
+
+    <select id="role" onchange="toggleAdminSecret()">
+      <option value="student">Student</option>
+      <option value="admin">Admin</option>
+    </select>
+
+    <div id="adminSecretBox" class="hidden">
+      <input type="password" id="adminSecret" placeholder="Enter Admin Secret Code">
+    </div>
+
+    <button onclick="signupUser()">Signup</button>
+  
+
+  <!-- Login option -->
+    <p class="login-link">
+      Already have an account? <a href="login.html">Login here</a>
+    </p>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:3000";
+
+    function togglePassword() {
+      const passwordInput = document.getElementById("password");
+      passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    }
+
+    function toggleAdminSecret() {
+      const role = document.getElementById("role").value;
+      document.getElementById("adminSecretBox").classList.toggle("hidden", role !== "admin");
+    }
+
+function signupUser() {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const role = document.getElementById("role").value;
+  const adminSecret = document.getElementById("adminSecret").value.trim();
+  const emailError = document.getElementById("emailError");
+
+  emailError.textContent = ""; // reset
+
+  if (!name || !email || !password) {
+    return alert("⚠️ Please fill in all fields");
+  }
+
+  // ✅ Inline error if email is not @vit.edu
+  if (!email.endsWith("@vit.edu")) {
+    emailError.textContent = "❌ Only @vit.edu emails are allowed.";
+    return;
+  }
+
+  fetch(`${API_URL}/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, password, role, adminSecret })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        emailError.textContent = "❌ " + data.error;
+      } else {
+        alert("✅ Signup successful! Please login.");
+        window.location.href = "login.html";
+      }
+    })
+    .catch(err => console.error("Signup error:", err));
+}
+
+function clearError(id) {
+  document.getElementById(id).textContent = "";
+}
+
+
+  </script>
+
+</body>
+</html>

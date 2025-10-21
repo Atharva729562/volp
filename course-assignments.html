@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Assignments</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="logo.png">
+</head>
+<script>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.body.className = savedTheme;
+</script>
+
+<body>
+  <section class="page-content">
+    <h1 id="courseTitle">Assignments</h1>
+    <div id="assignmentsContainer"></div>
+  </section>
+
+  <script src="script.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const courseId = params.get("course_id");
+    const role = localStorage.getItem("userRole");
+
+    if (!role || !courseId) {
+      alert("⚠️ Invalid access. Please login.");
+      window.location.href = "login.html";
+    }
+
+    // Fetch assignments
+    fetch(`${API_URL}/student/assignments/${courseId}`)
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("assignmentsContainer");
+        if (data.length === 0) {
+          container.innerHTML = "<p>No assignments yet.</p>";
+          return;
+        }
+        container.innerHTML = data.map(a => `
+          <div class="assignment-card">
+            <h4>${a.title}</h4>
+            <p><strong>Deadline:</strong> ${new Date(a.deadline).toLocaleString()}</p>
+            <div class="assignment-actions">
+              ${role === "admin" 
+                ? `
+                  <button class="btn submissions-btn" onclick="location.href='assignment-submissions.html?assignment_id=${a.assignment_id}'">
+                    📂 View Submissions
+                  </button>
+                  <button class="btn delete-btn" onclick="deleteAssignment(${a.assignment_id})">
+                    ❌ Delete Assignment
+                  </button>
+                `
+                : `
+                  <input type="file" id="file_${a.assignment_id}">
+                  <button onclick="submitAssignment(${a.assignment_id})">Submit</button>
+                `}
+            </div>
+          </div>
+        `).join("");
+      })
+      .catch(err => {
+        console.error("Error loading assignments:", err);
+        container.innerHTML = "<p>⚠️ Failed to load assignments.</p>";
+      });
+
+    // Student submit function
+    function submitAssignment(assignmentId) {
+      const studentId = localStorage.getItem("userId");
+      const fileInput = document.getElementById(`file_${assignmentId}`).files[0];
+      if (!studentId || !fileInput) {
+        alert("⚠️ Please select a file.");
+        return;
+      }
+      const formData = new FormData();
+      formData.append("student_id", studentId);
+      formData.append("assignment_id", assignmentId);
+      formData.append("file", fileInput);
+      fetch(`${API_URL}/student/submit`, {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => alert("✅ " + data.message));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - VOLPPro</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="logo.png">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .contact-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 30px;
+      width: 450px;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.8s ease;
+    }
+
+    .contact-card h2 {
+      color: #ffd600;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+      outline: none;
+    }
+
+    textarea {
+      resize: none;
+      height: 100px;
+    }
+
+    button {
+      background: #ffd600;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 15px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    button:hover {
+      background: #e6c200;
+      transform: scale(1.02);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="contact-card">
+    <h2>📩 Contact Us</h2>
+    <form id="contactForm">
+      <label for="name">Your Name</label>
+      <input type="text" id="name" required>
+
+      <label for="email">Your Email</label>
+      <input type="email" id="email" required>
+
+      <label for="subject">Subject</label>
+      <input type="text" id="subject" required>
+
+      <label for="message">Message</label>
+      <textarea id="message" required></textarea>
+
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:3000";
+
+    document.getElementById("contactForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const subject = document.getElementById("subject").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      fetch(`${API_URL}/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, subject, message })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          alert("❌ " + data.error);
+        } else {
+          alert("✅ Message sent successfully!");
+          document.getElementById("contactForm").reset();
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

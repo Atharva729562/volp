@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Features - VOLPPro</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="logo.png">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(135deg, #3d889c, #0072ff);
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    .features-hero {
+      text-align: center;
+      padding: 80px 20px 40px;
+      animation: fadeIn 1s ease-in;
+    }
+
+    .features-hero h1 {
+      font-size: 2.8em;
+      margin-bottom: 15px;
+      color: #ffd600;
+    }
+
+    .features-hero p {
+      font-size: 1.2em;
+      color: #ddd;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      padding: 40px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    .feature-card h2 {
+      margin-bottom: 10px;
+      color: #ffd600;
+    }
+
+    .comparison {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 60px 20px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .comparison-box {
+      flex: 1 1 300px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .comparison-box h3 {
+      color: #ffd600;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .comparison-box ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .comparison-box li {
+      margin: 8px 0;
+      padding-left: 1.2em;
+      position: relative;
+    }
+
+    .comparison-box li::before {
+      content: "✔️";
+      position: absolute;
+      left: 0;
+    }
+
+    .cta {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .cta h2 {
+      margin-bottom: 20px;
+      color: #ffd600;
+    }
+
+    .cta button {
+      background: #ffd600;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 28px;
+      margin: 10px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .cta button:hover {
+      background: #e6c200;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<script>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.body.className = savedTheme;
+</script>
+
+<body>
+
+  <!-- Hero Section -->
+  <section class="features-hero">
+    <h1>🚀 Why Choose VOLPPro?</h1>
+    <p>An advanced learning platform built for Students & Admins</p>
+  </section>
+
+  <!-- Features Grid -->
+  <section class="features-grid">
+    <div class="feature-card">
+      <h2>📚 Course Management</h2>
+      <p>Admins can create, edit, and delete courses with unique codes.</p>
+    </div>
+    <div class="feature-card">
+      <h2>🎓 Student Dashboard</h2>
+      <p>Students can join courses and track their assignments easily.</p>
+    </div>
+    <div class="feature-card">
+      <h2>📂 Assignment Submission</h2>
+      <p>Upload PDFs, DOCX, PPTs directly and never miss a deadline.</p>
+    </div>
+    <div class="feature-card">
+      <h2>⏰ Deadline Management</h2>
+      <p>Admins set assignment deadlines to keep learning on track.</p>
+    </div>
+    <div class="feature-card">
+      <h2>🔒 Secure Login</h2>
+      <p>Only <b>@vit.edu</b> accounts can signup & login for extra security.</p>
+    </div>
+    <div class="feature-card">
+      <h2>📊 Submissions Tracking</h2>
+      <p>Admins can view submissions per assignment with details.</p>
+    </div>
+  </section>
+
+  <!-- Comparison -->
+  <section class="comparison">
+    <div class="comparison-box">
+      <h3>👩‍🎓 For Students</h3>
+      <ul>
+        <li>Join courses with a unique code</li>
+        <li>View and submit assignments</li>
+        <li>Track deadlines & grades</li>
+      </ul>
+    </div>
+    <div class="comparison-box">
+      <h3>🧑‍🏫 For Admins</h3>
+      <ul>
+        <li>Create and manage courses</li>
+        <li>Set assignment deadlines</li>
+        <li>View student submissions</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta">
+    <h2>Start your journey with VOLPPro today!</h2>
+    <button onclick="window.location.href='signup.html'">Signup Now</button>
+  </section>
+
+</body>
+</html>

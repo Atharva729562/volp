@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore Courses - Admin</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="logo.png">
+</head>
+<script>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.body.className = savedTheme;
+</script>
+
+<body>
+  <section class="page-content">
+    <h1>Courses I Created</h1>
+    <div id="adminCourses" class="courses-container"></div>
+  </section>
+
+  <!-- Load main script first -->
+  <script src="script.js"></script>
+
+  <script>
+    // Ensure API_URL exists
+    if (typeof API_URL === "undefined") {
+      const API_URL = "http://localhost:3000";
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const adminId = params.get("admin_id");
+
+
+      fetch(`${API_URL}/admin/courses/${adminId}`)
+  .then(res => res.json())
+  .then(data => {
+    const container = document.getElementById("adminCourses");
+
+    if (!container) return;
+
+    if (data.length === 0) {
+      container.innerHTML = "<p>No courses created yet.</p>";
+      return;
+    }
+
+    container.innerHTML = data.map(c => `
+  <div class="course-card">
+    <h3>${c.name}</h3>
+    <p><strong>Code:</strong> ${c.code}</p>
+    <p><strong>ID:</strong> ${c.course_id}</p>
+    <div class="course-actions">
+      <button class="btn view-btn" onclick="location.href='course-assignments.html?course_id=${c.course_id}'">
+        📄 View Assignments
+      </button>
+      <button class="btn delete-btn" onclick="deleteCourse(${c.course_id})">
+        ❌ Delete Course
+      </button>
+    </div>
+  </div>
+`).join("");
+
+  });
+  </script>
+</body>
+</html>

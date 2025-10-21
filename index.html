@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOLP Pro</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="logo.png">
+</head>
+<script>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.body.className = savedTheme;
+</script>
+
+<body>
+  <!-- Navbar -->
+  <header>
+  <nav class="navbar">
+  <div class="logo">
+    <img src="logo.png" alt="Site Logo" class="nav-logo">
+    <span class="logo-text">VOLPPro</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="features.html">Features</a></li>
+    <li><a href="#" onclick="openCourses()">Courses</a></li>
+    <li><a href="analytics.html">Analytics</a></li>
+
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+
+
+
+  <!-- Right-side buttons -->
+  <div class="nav-actions">
+    <!-- Default login button -->
+    <a href="login.html" id="navLoginBtn" class="btn">Login</a>
+
+    <!-- Avatar + Logout (hidden initially) -->
+<div id="navUserInfo" class="user-info" style="display:none;">
+  <div class="dropdown">
+    <img src="https://www.w3schools.com/howto/img_avatar.png" 
+         alt="User" class="avatar" onclick="toggleDropdown()">
+    <div id="dropdownMenu" class="dropdown-menu">
+      <a href="profile.html">👤 Profile</a>
+      <a href="settings.html">⚙️ Settings</a>
+      <a href="#" onclick="handleLogout()">🚪 Logout</a>
+    </div>
+  </div>
+</div>
+
+</nav>
+
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Welcome to <span>VOLPPro</span></h1>
+    <p>Your Next Generation Learning Platform</p>
+    <a href="#" onclick="exploreCourses()" class="btn animated">Explore Courses</a>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - VOLPPro</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="logo.png">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      transition: background 0.3s ease, color 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* Dark theme */
+    body.dark {
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: #fff;
+    }
+
+    /* Light theme */
+    body.light {
+      background: #f4f4f4;
+      color: #000;
+    }
+
+    .settings-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 30px;
+      width: 400px;
+      text-align: left;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.8s ease;
+    }
+
+    .settings-card h2 {
+      text-align: center;
+      color: #ffd600;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 10px;
+      font-size: 1em;
+    }
+
+    button {
+      background: #ffd600;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 15px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    button:hover {
+      background: #e6c200;
+      transform: scale(1.02);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<script>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.body.className = savedTheme;
+</script>
+
+<body>
+  <div class="settings-card">
+    <h2>⚙️ Settings</h2>
+
+    <label for="name">Full Name</label>
+    <input type="text" id="name">
+
+    <label for="password">New Password</label>
+    <input type="password" id="password">
+
+    <label for="theme">Theme</label>
+    <select id="theme">
+      <option value="dark">Dark</option>
+      <option value="light">Light</option>
+    </select>
+
+    <button onclick="saveSettings()">Save Changes</button>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:3000";
+
+    window.onload = () => {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        alert("⚠️ Please login first.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      // Load current settings
+      fetch(`${API_URL}/settings/${userId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.error) {
+            document.getElementById("name").value = data.name;
+            document.getElementById("theme").value = data.theme || "dark";
+
+            // Apply theme
+            document.body.className = data.theme || "dark";
+          }
+        });
+    };
+
+    function saveSettings() {
+      const userId = localStorage.getItem("userId");
+      const name = document.getElementById("name").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const theme = document.getElementById("theme").value;
+
+      fetch(`${API_URL}/settings/${userId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, password, theme })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            alert("❌ " + data.error);
+          } else {
+            // Save theme locally too
+            document.body.className = theme;
+            localStorage.setItem("theme", theme);
+            alert("✅ Settings updated successfully!");
+          }
+        });
+    }
+  </script>
+
+</body>
+</html>
